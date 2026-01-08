@@ -91,5 +91,4 @@ Los scripts fijan semilla y guardan salidas en `docs/assets`. No se versionan pe
 - Benchmarks actuales son CPU con NumPy; no representan rendimiento FPGA.
 - Sin cuantización ni soporte de ranks dinámicos por batch.
 
-## Contacto
-[TU_EMAIL] | [TU_LINKEDIN]
+
