@@ -31,7 +31,8 @@ REQUIRED_FILES = [
     Path("docs/indra/onepager.md"),
     Path("docs/indra/pitchdeck.md"),
     Path("docs/indra/techbrief.md"),
-    Path("docs/indra/evidence-pack.md"),
+    Path("docs/indra/evidence_pack.md"),
+    Path("docs/indra/README.md"),
 ]
 
 
