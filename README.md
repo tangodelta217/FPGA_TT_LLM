@@ -2,21 +2,27 @@
 
 ![CI](docs/assets/ci_badge.svg)
 
-## Why this matters
-Las capas lineales suelen ser bandwidth-bound y dominan el coste en inferencia. Un kernel de contracción TT en FPGA permite mantener datos en buffers locales y controlar latencia, con impacto directo en SWaP / determinismo / soberanía en despliegues en borde.
+## Problema
+- Las capas lineales dominan el coste en escenarios bandwidth-bound y penalizan SWaP / determinismo / soberanía.
+- El acceso a memoria externa limita la latencia y la repetibilidad temporal.
 
-## What you get
-- Demo reproducible de contracción Tensor-Train (TT) en CPU con salida en `docs/assets`.
-- Scripts de benchmark y auditoría de evidencia para preparar métricas base.
+## Solución
+- Compresión Tensor-Train (TT) de pesos y ejecución con kernel de contracción TT en FPGA.
+- Pipeline en streaming para reducir tráfico a DDR y estabilizar latencia.
+
+## Qué se entrega
+- Demo CPU reproducible de TT para capas lineales con métricas de compresión y error.
+- IP skeleton HLS/RTL con interfaces AXI y mapa de registros.
 - Paquete Indra con onepager, pitchdeck, techbrief y evidence pack.
 
-## Demo Quickstart
+## Quickstart
 ```bash
 python -m pip install -r requirements.txt
-python -m scripts.demo_tt_linear
-python -m scripts.wow_audit
+make demo
+make benchmarks
+make test
 ```
-Salidas: `docs/assets/demo_output.txt`, `docs/assets/kpi_table.md`.
+Salidas principales: `docs/assets/demo_output.txt`, `docs/assets/kpi_table.md`, `docs/assets/bench_tradeoff.png`.
 
 ## Arquitectura
 ```mermaid
@@ -32,9 +38,12 @@ flowchart LR
     BUF <--> KERNEL
 ```
 
-## KPI targets
+## KPIs
 | KPI | Definición | Estado |
 | --- | --- | --- |
+| Compresión efectiva TT (demo CPU) | Ratio dense/TT para ranks evaluados | Medido (ver [kpi_table.md](docs/assets/kpi_table.md)) |
+| Error relativo L2 (demo CPU) | Error relativo de salida vs dense | Medido (ver [kpi_table.md](docs/assets/kpi_table.md)) |
+| Tiempo TT vs dense (us, demo CPU) | Mediana en host CPU | Medido (ver [kpi_table.md](docs/assets/kpi_table.md)) |
 | Latencia por contracción TT (us) | Tiempo por llamada del kernel de contracción TT en FPGA | Objetivo (TBD) |
 | Throughput efectivo (GFLOP/s) | Rendimiento sostenido del kernel de contracción TT | Objetivo (TBD) |
 | Uso de recursos FPGA (LUT/FF/BRAM/DSP, %) | Porcentaje de utilización del dispositivo objetivo | Objetivo (TBD) |
@@ -46,7 +55,10 @@ flowchart LR
 
 Activos generados con `make benchmarks`:
 - `docs/assets/bench_results.csv`
+- `docs/assets/bench_tradeoff.png`
 - `docs/assets/kpi_table.md`
+
+Activos generados con `make demo`:
 - `docs/assets/demo_output.txt`
 
 ## Indra Package
@@ -56,24 +68,24 @@ Activos generados con `make benchmarks`:
 - [evidence_pack.md](docs/indra/evidence_pack.md)
 
 ## Repo map
-- `ml/`: prototipos de compresion Tensor-Train (TT) y validacion.
+- `ml/`: prototipos de compresión Tensor-Train (TT) y validación.
 - `hw/README.md`: descripción de interfaces HW, layout de cores y plan de V&V.
 - `hw/`: skeleton HW con `hls/` y `rtl/`.
-- `sw/`: integracion SW y drivers (placeholder).
+- `sw/`: integración SW y drivers (placeholder).
 - `scripts/`: demos, benchmarks y empaquetado Indra.
 - `docs/indra/`: documentos ejecutivos para Indra.
 - `docs/assets/`: salidas reproducibles y evidencias.
 
 ## Reproducibilidad y limitaciones
-Los scripts fijan seeds y guardan outputs en `docs/assets`. No se versionan pesos grandes; se usan datos sinteticos reproducibles.
+Los scripts fijan seeds y guardan outputs en `docs/assets`. No se versionan pesos grandes; se usan datos sintéticos reproducibles.
 
 ### Decisiones de diseño
-- Separacion SW/HW para aislar V&V y facilitar integracion incremental.
+- Separación SW/HW para aislar V&V y facilitar integración incremental.
 - Interfaz HW/SW planificada con control AXI-Lite y flujo de datos por DMA/AXI.
 - Evidencias versionadas: outputs deterministas y auditables en `docs/assets`.
 
 ### Limitaciones actuales
-- No hay kernel HLS ni bitstream FPGA; el HW esta en skeleton.
+- No hay kernel HLS ni bitstream FPGA; el HW está en skeleton.
 - Benchmarks actuales son CPU con NumPy; no representan rendimiento FPGA.
 - No se incluyen pesos grandes ni datasets reales por tamaño o licencias.
 
