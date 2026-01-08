@@ -11,10 +11,10 @@ Las capas lineales suelen ser bandwidth-bound y dominan el coste en inferencia. 
 ## Demo Quickstart
 ```bash
 python -m pip install -r requirements.txt
-python -m scripts.demo_tt
+python -m scripts.demo_tt_linear
 python -m scripts.wow_audit
 ```
-Salida principal: `docs/assets/demo_output.txt`.
+Salidas: `docs/assets/demo_output.txt`, `docs/assets/kpi_table.md`.
 
 ## Arquitectura
 ```mermaid

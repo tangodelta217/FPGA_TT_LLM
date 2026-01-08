@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Iterable, Sequence
+from typing import Sequence
 
 import numpy as np
 
 
-def build_random_cores(rng: np.random.Generator, dims: Sequence[int], ranks: Sequence[int]) -> list[np.ndarray]:
+def build_random_cores(
+    rng: np.random.Generator, dims: Sequence[int], ranks: Sequence[int]
+) -> list[np.ndarray]:
     if len(ranks) != len(dims) + 1:
         raise ValueError("ranks must have len(dims) + 1")
 

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import argparse
-from pathlib import Path
 import zipfile
+from pathlib import Path
 
 DEFAULT_OUTPUT = Path("docs/indra_pack.zip")
 INCLUDE_DIRS = [Path("docs/indra"), Path("docs/assets")]

@@ -41,7 +41,7 @@ python -m pytest
 exit /b %errorlevel%
 
 :demo
-python -m scripts.demo_tt
+python -m scripts.demo_tt_linear
 exit /b %errorlevel%
 
 :benchmarks

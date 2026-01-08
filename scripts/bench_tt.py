@@ -16,7 +16,9 @@ DEFAULT_CASES = [
 ]
 
 
-def bench_case(dims: tuple[int, ...], ranks: tuple[int, ...], runs: int, seed: int) -> dict[str, float | str]:
+def bench_case(
+    dims: tuple[int, ...], ranks: tuple[int, ...], runs: int, seed: int
+) -> dict[str, float | str]:
     rng = np.random.default_rng(seed)
     cores = build_random_cores(rng, dims, ranks)
     vectors = [rng.standard_normal((n,)) for n in dims]

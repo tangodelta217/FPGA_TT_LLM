@@ -2,6 +2,7 @@
 
 ## Evidencias actuales
 - docs/assets/demo_output.txt: salida de demo funcional de contracción TT en CPU (generada con `make demo`).
+- docs/assets/kpi_table.md: tabla de compresion, error y tiempos en CPU (generada con `make demo`).
 
 ## Como reproducir
 1. `make setup`
