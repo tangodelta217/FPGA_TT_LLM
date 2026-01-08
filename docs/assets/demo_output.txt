@@ -1,0 +1,8 @@
+demo_tt
+seed: 0
+dims: 4,5,3
+ranks: 1,2,2,1
+tt_value: 5.140501e-01
+full_value: 5.140501e-01
+abs_error: 1.110223e-16
+rel_error: 2.159757e-16
