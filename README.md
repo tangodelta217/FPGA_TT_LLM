@@ -1,5 +1,7 @@
 # TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
 
+![CI](docs/assets/ci_badge.svg)
+
 ## Why this matters
 Las capas lineales suelen ser bandwidth-bound y dominan el coste en inferencia. Un kernel de contracción TT en FPGA permite mantener datos en buffers locales y controlar latencia, con impacto directo en SWaP / determinismo / soberanía en despliegues en borde.
 

@@ -137,6 +137,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--csv", type=Path, default=DEFAULT_CSV, help="Salida CSV.")
     parser.add_argument("--png", type=Path, default=DEFAULT_PNG, help="Salida grafico.")
     parser.add_argument("--kpi", type=Path, default=DEFAULT_KPI, help="Salida KPI.")
+    parser.add_argument(
+        "--quick",
+        action="store_true",
+        help="Modo rapido para CI (menos ranks y repeticiones).",
+    )
     return parser.parse_args()
 
 
@@ -146,6 +151,12 @@ def main() -> None:
     dims_in = (4, 4, 4, 4)
     rank_values = [2, 4, 8, 16]
     base_ranks = (1, 8, 8, 8, 1)
+    runs = args.runs
+
+    if args.quick:
+        rank_values = [2, 4]
+        base_ranks = (1, 4, 4, 4, 1)
+        runs = 12
 
     rng = np.random.default_rng(args.seed)
     base_cores = build_random_tt_cores(rng, dims_out, dims_in, base_ranks)
@@ -155,7 +166,7 @@ def main() -> None:
     def dense_func() -> np.ndarray:
         return weights @ x
 
-    dense_us = _median_time_us(dense_func, args.runs)
+    dense_us = _median_time_us(dense_func, runs)
     y_dense = dense_func()
 
     rows: list[dict[str, float | str]] = []
@@ -173,7 +184,7 @@ def main() -> None:
         def tt_func() -> np.ndarray:
             return tt_matvec(cores, x)
 
-        tt_us = _median_time_us(tt_func, args.runs)
+        tt_us = _median_time_us(tt_func, runs)
         dense_bytes = int(weights.nbytes)
         tt_bytes = _compression_bytes(cores)
         comp_ratio = dense_bytes / tt_bytes
@@ -200,14 +211,14 @@ def main() -> None:
         dims_out=_format_dims(dims_out),
         dims_in=_format_dims(dims_in),
         ranks="|".join(_format_ranks((1, r, r, r, 1)) for r in rank_values),
-        runs=args.runs,
+        runs=runs,
         seed=args.seed,
     )
     base_info = f"Modelo sintetico: pesos generados con TT base rank={_format_ranks(base_ranks)}."
 
     write_csv(args.csv, rows)
     write_tradeoff_plot(args.png, rank_values, rel_l2_values, comp_ratio_values)
-    write_kpi_table(args.kpi, rows, context, base_info, args.runs)
+    write_kpi_table(args.kpi, rows, context, base_info, runs)
 
 
 if __name__ == "__main__":
