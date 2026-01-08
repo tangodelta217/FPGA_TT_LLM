@@ -1,18 +1,30 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
+# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracci?n en FPGA
 
-## Evidencias actuales
-- docs/assets/demo_output.txt: salida de demo funcional de contracción TT en CPU (generada con `make demo`).
-- docs/assets/bench_results.csv: resultados de benchmarks en CPU (generada con `make benchmarks`).
-- docs/assets/bench_tradeoff.png: gráfico de trade-off compresión vs error (generado con `make benchmarks`).
-- docs/assets/kpi_table.md: tabla KPI de compresión, error y tiempos en CPU (generada con `make benchmarks`).
+## Enlaces clave
+- README del repo: [README.md](../../README.md)
+- Demo script: [demo_tt_linear.py](../../scripts/demo_tt_linear.py)
+- Benchmarks script: [run_benchmarks.py](../../scripts/run_benchmarks.py)
 
-## Gráfico y tabla
+## Evidencias (comando + archivo + interpretaci?n)
+- Demo TT CPU: comando `make demo`; archivo [demo_output.txt](../assets/demo_output.txt); interpretaci?n: valida compresi?n y error en contracci?n TT con tiempos medidos en host CPU.
+- Benchmarks TT CPU: comando `make benchmarks`; archivos [bench_results.csv](../assets/bench_results.csv), [bench_tradeoff.png](../assets/bench_tradeoff.png), [kpi_table.md](../assets/kpi_table.md); interpretaci?n: muestra trade-off compresi?n/error y tiempos medianos en CPU por rank.
+
+## Gr?fico y tabla KPI (demo CPU)
 ![Tradeoff TT](../assets/bench_tradeoff.png)
 
-Tabla KPI: `../assets/kpi_table.md`
+# KPI demo TT (CPU)
+Contexto: dims_out=4x4x4x4, dims_in=4x4x4x4, ranks=1-2-2-2-1|1-4-4-4-1|1-8-8-8-1|1-16-16-16-1, repeticiones=40, semilla=0
+Modelo sintetico: pesos generados con TT base rank=1-8-8-8-1.
+Medicion: host CPU (no FPGA). Tiempos en microsegundos, mediana de 40 repeticiones.
 
-## Demo output
-Archivo: `../assets/demo_output.txt`
+| rank | comp_ratio | comp_pct | rel_l2 | max_abs | dense_us | tt_us |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1-2-2-2-1 | 341.33 | 99.7% | 8.852e-01 | 1.005e+03 | 5.40 | 24.30 |
+| 1-4-4-4-1 | 102.40 | 99.0% | 7.184e-01 | 9.763e+02 | 5.40 | 27.40 |
+| 1-8-8-8-1 | 28.44 | 96.5% | 3.080e-15 | 4.064e-12 | 5.40 | 36.20 |
+| 1-16-16-16-1 | 7.53 | 86.7% | 2.545e-15 | 4.206e-12 | 5.40 | 61.20 |
+
+## Snippet de demo_output.txt
 ```text
 Demo TT para capa lineal
 Contexto: dims_out=4x4x4x4, dims_in=4x4x4x4, ranks=1-2-2-2-1|1-4-4-4-1|1-8-8-8-1, repeticiones=30, semilla=0
@@ -27,17 +39,25 @@ Dense baseline (us): 3.90
 | 1-8-8-8-1 | 28.44 | 96.5% | 1.788e-15 | 2.043e-14 | 38.60 |
 ```
 
+## Checklist de reproducibilidad
+- `make demo`
+- `make benchmarks`
+- `make test`
+
 ## KPIs
-| KPI | Definición | Estado |
+| KPI | Definici?n | Estado |
 | --- | --- | --- |
-| Latencia por contracción TT (us) | Tiempo por llamada del kernel de contracción TT en FPGA | Objetivo (TBD) |
-| Throughput efectivo (GFLOP/s) | Rendimiento sostenido del kernel de contracción TT | Objetivo (TBD) |
-| Uso de recursos FPGA (LUT/FF/BRAM/DSP, %) | Porcentaje de utilización del dispositivo objetivo | Objetivo (TBD) |
+| Compresi?n efectiva TT (demo CPU) | Ratio dense/TT para ranks evaluados | Medido (ver [kpi_table.md](../assets/kpi_table.md)) |
+| Error relativo L2 (demo CPU) | Error relativo de salida vs dense | Medido (ver [kpi_table.md](../assets/kpi_table.md)) |
+| Tiempo TT vs dense (us, demo CPU) | Mediana en host CPU | Medido (ver [kpi_table.md](../assets/kpi_table.md)) |
+| Latencia por contracci?n TT (us) | Tiempo por llamada del kernel de contracci?n TT en FPGA | Objetivo (TBD) |
+| Throughput efectivo (GFLOP/s) | Rendimiento sostenido del kernel de contracci?n TT | Objetivo (TBD) |
+| Uso de recursos FPGA (LUT/FF/BRAM/DSP, %) | Porcentaje de utilizaci?n del dispositivo objetivo | Objetivo (TBD) |
 | Consumo medio (W) | Potencia media bajo carga representativa | Objetivo (TBD) |
-| Determinismo (jitter p99, us) | Variación temporal p99 por llamada | Objetivo (TBD) |
+| Determinismo (jitter p99, us) | Variaci?n temporal p99 por llamada | Objetivo (TBD) |
 
 ## Limitaciones
-- Evidencia centrada en validación funcional en SW; no hay bitstream FPGA.
+- Evidencia centrada en validaci?n funcional en SW; no hay bitstream FPGA.
 - No hay mediciones de potencia o recursos en hardware.
 
 ## Contacto

@@ -1,34 +1,50 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
+# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracci?n en FPGA
 
-## Resumen ejecutivo
-Proyecto de TFM orientado a co-diseno IA+FPGA para acelerar capas lineales mediante Tensor-Train (TT) y un kernel de contracción TT en FPGA. El foco es reducir SWaP y mejorar determinismo en escenarios con restricciones de soberanía y despliegue en borde.
+## Problema
+- Las capas lineales dominan el coste en escenarios bandwidth-bound y penalizan SWaP / determinismo / soberan?a.
+- El acceso a memoria externa limita la latencia y la repetibilidad temporal.
 
-## Alcance
-- Descomposicion TT/MPS de pesos para capas lineales y canalizacion de contracciones.
-- Kernel de contracción TT en FPGA con interfaz controlada desde SW.
-- Plan de V&V con pruebas funcionales en software y pruebas de integracion HW/SW.
+## Soluci?n
+- Compresi?n Tensor-Train (TT) de pesos y ejecuci?n con kernel de contracci?n TT en FPGA.
+- Pipeline en streaming para reducir tr?fico a DDR y estabilizar latencia.
+
+## Qu? se entrega
+- Demo CPU reproducible de TT para capas lineales con m?tricas de compresi?n y error.
+- IP skeleton HLS/RTL con interfaces AXI y mapa de registros.
+- Plan de V&V con golden model en Python y pruebas autom?ticas.
 
 ## KPIs
-| KPI | Definición | Estado |
+| KPI | Definici?n | Estado |
 | --- | --- | --- |
-| Latencia por contracción TT (us) | Tiempo por llamada del kernel de contracción TT en FPGA | Objetivo (TBD) |
-| Throughput efectivo (GFLOP/s) | Rendimiento sostenido del kernel de contracción TT | Objetivo (TBD) |
-| Uso de recursos FPGA (LUT/FF/BRAM/DSP, %) | Porcentaje de utilización del dispositivo objetivo | Objetivo (TBD) |
+| Compresi?n efectiva TT (demo CPU) | Ratio dense/TT para ranks evaluados | Medido (ver [kpi_table.md](../assets/kpi_table.md)) |
+| Error relativo L2 (demo CPU) | Error relativo de salida vs dense | Medido (ver [kpi_table.md](../assets/kpi_table.md)) |
+| Tiempo TT vs dense (us, demo CPU) | Mediana en host CPU | Medido (ver [kpi_table.md](../assets/kpi_table.md)) |
+| Latencia por contracci?n TT (us) | Tiempo por llamada del kernel de contracci?n TT en FPGA | Objetivo (TBD) |
+| Throughput efectivo (GFLOP/s) | Rendimiento sostenido del kernel de contracci?n TT | Objetivo (TBD) |
+| Uso de recursos FPGA (LUT/FF/BRAM/DSP, %) | Porcentaje de utilizaci?n del dispositivo objetivo | Objetivo (TBD) |
 | Consumo medio (W) | Potencia media bajo carga representativa | Objetivo (TBD) |
-| Determinismo (jitter p99, us) | Variación temporal p99 por llamada | Objetivo (TBD) |
+| Determinismo (jitter p99, us) | Variaci?n temporal p99 por llamada | Objetivo (TBD) |
 
 ## Estado actual
-- Skeleton de repo con tooling, pruebas y scripts base.
-- Flujo SW listo para validar contracción TT en CPU.
-- Interfaz HW/SW definida a nivel de plan de pruebas y contratos de datos.
+- Demo TT en CPU con outputs en `docs/assets/` y tabla KPI generada por `make benchmarks`.
+- Skeleton HW (HLS/RTL) y documentaci?n de interfaces y registros.
 
-## Limitaciones actuales
-- No hay bitstream FPGA ni mediciones de recursos o potencia.
-- No hay resultados de rendimiento en hardware; las metricas permanecen como Objetivo (TBD).
+## Siguiente incremento
+- Implementar kernel HLS con pipeline estable y backpressure.
+- Integrar DMA/DDR y validar layout de cores TT en memoria.
 
-## Proximos pasos
-- Implementar kernel de contracción TT en HLS y validar interfaces.
-- Integrar pruebas de latencia y determinismo con medicion repetida y reporte de mediana.
+## Plan (3 hitos)
+1. Kernel de contracci?n TT en HLS con pruebas unitarias b?sicas.
+2. Integraci?n HW/SW con DMA y validaci?n de interfaces AXI.
+3. Medici?n de latencia, determinismo y recursos en FPGA (KPIs HW).
+
+## Riesgos y mitigaci?n
+- Riesgo: error num?rico por cuantizaci?n. Mitigaci?n: golden model y tolerancias por rango.
+- Riesgo: ancho de banda insuficiente. Mitigaci?n: streaming y double buffering.
+
+## Qu? necesito de Indra
+- Revisi?n de requisitos de interfaz y plataforma FPGA objetivo.
+- Feedback sobre KPIs prioritarios y perfiles de carga reales.
 
 ## Contacto
 [TU_NOMBRE] - [TU_EMAIL]
