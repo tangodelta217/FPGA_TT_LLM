@@ -45,7 +45,7 @@ python -m scripts.demo_tt_linear
 exit /b %errorlevel%
 
 :benchmarks
-python -m scripts.bench_tt
+python -m scripts.run_benchmarks
 exit /b %errorlevel%
 
 :indra_pack

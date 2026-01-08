@@ -1,10 +1,11 @@
 # KPI demo TT (CPU)
-Contexto: dims_out=4x4x4x4, dims_in=4x4x4x4, ranks=1-2-2-2-1|1-4-4-4-1|1-8-8-8-1, repeticiones=30, semilla=0
-Modelo sintetico: pesos generados con TT base rank=1-4-4-4-1.
-Medicion: host CPU (no FPGA). Tiempos en microsegundos, mediana de 30 repeticiones.
+Contexto: dims_out=4x4x4x4, dims_in=4x4x4x4, ranks=1-2-2-2-1|1-4-4-4-1|1-8-8-8-1|1-16-16-16-1, repeticiones=40, semilla=0
+Modelo sintetico: pesos generados con TT base rank=1-8-8-8-1.
+Medicion: host CPU (no FPGA). Tiempos en microsegundos, mediana de 40 repeticiones.
 
 | rank | comp_ratio | comp_pct | rel_l2 | max_abs | dense_us | tt_us |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1-2-2-2-1 | 341.33 | 99.7% | 8.518e-01 | 6.268e+00 | 3.90 | 24.25 |
-| 1-4-4-4-1 | 102.40 | 99.0% | 1.600e-15 | 1.066e-14 | 3.90 | 27.70 |
-| 1-8-8-8-1 | 28.44 | 96.5% | 1.788e-15 | 2.043e-14 | 3.90 | 38.60 |
+| 1-2-2-2-1 | 341.33 | 99.7% | 8.852e-01 | 1.005e+03 | 5.40 | 24.30 |
+| 1-4-4-4-1 | 102.40 | 99.0% | 7.184e-01 | 9.763e+02 | 5.40 | 27.40 |
+| 1-8-8-8-1 | 28.44 | 96.5% | 3.080e-15 | 4.064e-12 | 5.40 | 36.20 |
+| 1-16-16-16-1 | 7.53 | 86.7% | 2.545e-15 | 4.206e-12 | 5.40 | 61.20 |

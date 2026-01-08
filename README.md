@@ -39,6 +39,14 @@ flowchart LR
 | Consumo medio (W) | Potencia media bajo carga representativa | Objetivo (TBD) |
 | Determinismo (jitter p99, us) | Variación temporal p99 por llamada | Objetivo (TBD) |
 
+## Evidence
+![Tradeoff TT](docs/assets/bench_tradeoff.png)
+
+Activos generados con `make benchmarks`:
+- `docs/assets/bench_results.csv`
+- `docs/assets/kpi_table.md`
+- `docs/assets/demo_output.txt`
+
 ## Indra Package
 - [onepager.md](docs/indra/onepager.md)
 - [pitchdeck.md](docs/indra/pitchdeck.md)

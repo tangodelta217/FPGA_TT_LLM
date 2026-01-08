@@ -23,7 +23,7 @@ demo:
 	python -m scripts.demo_tt_linear
 
 benchmarks:
-	python -m scripts.bench_tt
+	python -m scripts.run_benchmarks
 
 indra-pack:
 	python -m scripts.indra_pack
