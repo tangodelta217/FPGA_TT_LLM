@@ -1,17 +1,17 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
+# TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
 
 ## Problema
-- Las capas lineales dominan el coste en escenarios bandwidth-bound y penalizan SWaP / determinismo / soberanía.
-- El acceso a memoria externa limita la latencia y la repetibilidad temporal.
+- En inferencia en borde, las capas lineales son bandwidth-bound y el coste de memoria domina; esto penaliza SWaP / determinismo / soberanía.
+- La dependencia de DDR/DMA introduce latencia variable y limita la repetibilidad temporal.
 
 ## Solución
 - Compresión Tensor-Train (TT) de pesos y ejecución con kernel de contracción TT en FPGA.
-- Pipeline en streaming para reducir tráfico a DDR y estabilizar latencia.
+- Streaming con buffers locales para reducir tráfico a DDR y estabilizar la latencia.
 
 ## Qué se entrega
-- Demo CPU reproducible de TT para capas lineales con métricas de compresión y error.
-- IP skeleton HLS/RTL con interfaces AXI y mapa de registros.
-- Plan de V&V con golden model en Python y pruebas automáticas.
+- Demo CPU reproducible en NumPy (TT-SVD + referencia densa) con salidas en `docs/assets/`.
+- Skeleton HLS/RTL con AXI4-Lite/AXI-Stream y mapa de registros.
+- Plan de V&V con golden model en Python y pruebas automatizadas.
 
 ## KPIs
 | KPI | Definición | Estado |
@@ -26,25 +26,25 @@
 | Determinismo (jitter p99, us) | Variación temporal p99 por llamada | Objetivo (TBD) |
 
 ## Estado actual
-- Demo TT en CPU con outputs en `docs/assets/` y tabla KPI generada por `make benchmarks`.
-- Skeleton HW (HLS/RTL) y documentación de interfaces y registros.
+- Demo CPU ejecutable con `make demo` y `make benchmarks`; tabla KPI y gráfico en `docs/assets/`.
+- Skeleton HW documentado (interfaces, register map y supuestos explícitos).
 
 ## Siguiente incremento
-- Implementar kernel HLS con pipeline estable y backpressure.
+- Implementar kernel HLS funcional con pipeline y backpressure.
 - Integrar DMA/DDR y validar layout de cores TT en memoria.
 
 ## Plan (3 hitos)
-1. Kernel de contracción TT en HLS con pruebas unitarias básicas.
+1. Kernel de contracción TT en HLS con pruebas unitarias y golden model.
 2. Integración HW/SW con DMA y validación de interfaces AXI.
 3. Medición de latencia, determinismo y recursos en FPGA (KPIs HW).
 
 ## Riesgos y mitigación
-- Riesgo: error numérico por cuantización. Mitigación: golden model y tolerancias por rango.
-- Riesgo: ancho de banda insuficiente. Mitigación: streaming y double buffering.
+- Riesgo: error numérico con ranks bajos. Mitigación: barrido de ranks y validación con golden model.
+- Riesgo: cuello de banda DDR. Mitigación: streaming y double buffering.
 
 ## Qué necesito de Indra
-- Revisión de requisitos de interfaz y plataforma FPGA objetivo.
-- Feedback sobre KPIs prioritarios y perfiles de carga reales.
+- Confirmación de plataforma FPGA y restricciones de interfaz.
+- Perfiles de carga reales y KPIs prioritarios.
 
 ## Contacto
 [TU_NOMBRE] - [TU_EMAIL]

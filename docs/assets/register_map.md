@@ -1,31 +1,31 @@
-# Register Map (TT Contraction Engine)
+# Mapa de registros (kernel de contracci贸n TT)
 
-| Registro | Offset | Descripci髇 |
+| Registro | Offset | Descripci贸n |
 | --- | --- | --- |
 | CTRL | 0x00 | bit0 start, bit1 soft_reset, bit2 irq_en |
 | STATUS | 0x04 | bit0 busy, bit1 done, bit2 error |
-| IN_PTR | 0x08 | Direcci髇 base de activaciones de entrada |
-| OUT_PTR | 0x0C | Direcci髇 base de salida |
-| CORES_PTR | 0x10 | Direcci髇 base de cores TT |
+| IN_PTR | 0x08 | Direcci贸n base de activaciones de entrada |
+| OUT_PTR | 0x0C | Direcci贸n base de salida |
+| CORES_PTR | 0x10 | Direcci贸n base de cores TT |
 | DIMS | 0x14 | Packed dims (d0,d1,d2,d3) |
 | RANKS | 0x18 | Packed ranks (r0,r1,r2,r3,r4) |
-| SCALE_PTR | 0x1C | Direcci髇 de escalas para cuantizaci髇 |
-| CYCLES | 0x20 | Contador de ciclos | 
+| SCALE_PTR | 0x1C | Direcci贸n de escalas para cuantizaci贸n |
+| CYCLES | 0x20 | Contador de ciclos |
 | STALLS | 0x24 | Contador de stalls |
-| ERR | 0x28 | C骴igo de error latched |
+| ERR | 0x28 | C贸digo de error latched |
 
-## Secuencia de programaci髇 (ejemplo)
+## Secuencia de programaci贸n (ejemplo)
 1. Escribir IN_PTR, OUT_PTR, CORES_PTR y SCALE_PTR.
 2. Configurar DIMS y RANKS con los valores de la capa.
 3. Limpiar STATUS leyendo el registro.
 4. Escribir CTRL.start=1.
 5. Esperar STATUS.done=1.
-6. Leer CYCLES y STALLS para m閠ricas.
+6. Leer CYCLES y STALLS para m茅tricas.
 
-## Supuestos expl韈itos
+## Supuestos expl铆citos
 - Direcciones alineadas a 64 bytes.
-- Tama駉s soportados en m鷏tiplos de 4 elementos.
+- Tama帽os soportados en m煤ltiplos de 4 elementos.
 
-## L韒ites actuales
-- No soporta m鷏tiples streams concurrentes.
-- No soporta reconfiguraci髇 de precisi髇 en caliente.
+## L铆mites actuales
+- No soporta m煤ltiples streams concurrentes.
+- No soporta reconfiguraci贸n de precisi贸n en caliente.

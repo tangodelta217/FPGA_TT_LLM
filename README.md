@@ -1,18 +1,18 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
+# TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
 
 ![CI](docs/assets/ci_badge.svg)
 
 ## Problema
-- Las capas lineales dominan el coste en escenarios bandwidth-bound y penalizan SWaP / determinismo / soberanía.
-- El acceso a memoria externa limita la latencia y la repetibilidad temporal.
+- En inferencia en borde, las capas lineales son bandwidth-bound y el coste de memoria domina; esto penaliza SWaP / determinismo / soberanía.
+- El tráfico a DDR introduce latencia variable y limita la repetibilidad temporal.
 
 ## Solución
 - Compresión Tensor-Train (TT) de pesos y ejecución con kernel de contracción TT en FPGA.
-- Pipeline en streaming para reducir tráfico a DDR y estabilizar latencia.
+- Streaming con buffers locales para reducir tráfico a DDR y estabilizar la latencia.
 
 ## Qué se entrega
-- Demo CPU reproducible de TT para capas lineales con métricas de compresión y error.
-- IP skeleton HLS/RTL con interfaces AXI y mapa de registros.
+- Demo CPU reproducible en NumPy (TT-SVD + referencia densa) con salidas en `docs/assets/`.
+- Skeleton HLS/RTL con interfaces AXI, mapa de registros y supuestos explícitos en `hw/`.
 - Paquete Indra con onepager, pitchdeck, techbrief y evidence pack.
 
 ## Quickstart
@@ -22,6 +22,7 @@ make demo
 make benchmarks
 make test
 ```
+En Windows, usar `make.bat` si `make` no está disponible.
 Salidas principales: `docs/assets/demo_output.txt`, `docs/assets/kpi_table.md`, `docs/assets/bench_tradeoff.png`.
 
 ## Arquitectura
@@ -53,6 +54,7 @@ flowchart LR
 ## Evidence
 ![Tradeoff TT](docs/assets/bench_tradeoff.png)
 
+El gráfico resume el trade-off compresión/error medido en CPU; la tabla KPI añade tiempos (mediana) por rank.
 Activos generados con `make benchmarks`:
 - `docs/assets/bench_results.csv`
 - `docs/assets/bench_tradeoff.png`
@@ -68,8 +70,8 @@ Activos generados con `make demo`:
 - [evidence_pack.md](docs/indra/evidence_pack.md)
 
 ## Repo map
-- `ml/`: prototipos de compresión Tensor-Train (TT) y validación.
-- `hw/README.md`: descripción de interfaces HW, layout de cores y plan de V&V.
+- `ml/`: prototipos de compresión Tensor-Train (TT) y validación con TT-SVD.
+- `hw/README.md`: interfaces HW, layout de cores TT, mapa de registros y plan de V&V.
 - `hw/`: skeleton HW con `hls/` y `rtl/`.
 - `sw/`: integración SW y drivers (placeholder).
 - `scripts/`: demos, benchmarks y empaquetado Indra.
@@ -77,17 +79,17 @@ Activos generados con `make demo`:
 - `docs/assets/`: salidas reproducibles y evidencias.
 
 ## Reproducibilidad y limitaciones
-Los scripts fijan seeds y guardan outputs en `docs/assets`. No se versionan pesos grandes; se usan datos sintéticos reproducibles.
+Los scripts fijan semilla y guardan salidas en `docs/assets`. No se versionan pesos grandes ni datasets reales; se usan datos sintéticos reproducibles.
 
 ### Decisiones de diseño
-- Separación SW/HW para aislar V&V y facilitar integración incremental.
-- Interfaz HW/SW planificada con control AXI-Lite y flujo de datos por DMA/AXI.
-- Evidencias versionadas: outputs deterministas y auditables en `docs/assets`.
+- Separación SW/HW para validar matemáticas en CPU antes de integrar HW.
+- Interfaz HW/SW basada en AXI4-Lite (control) y AXI-Stream/DMA (datos).
+- Evidencias versionadas (CSV/PNG/MD) para trazabilidad técnica.
 
 ### Limitaciones actuales
-- No hay kernel HLS ni bitstream FPGA; el HW está en skeleton.
+- No hay kernel HLS funcional ni bitstream FPGA; el HW está en skeleton.
 - Benchmarks actuales son CPU con NumPy; no representan rendimiento FPGA.
-- No se incluyen pesos grandes ni datasets reales por tamaño o licencias.
+- Sin cuantización ni soporte de ranks dinámicos por batch.
 
 ## Contacto
 [TU_EMAIL] | [TU_LINKEDIN]

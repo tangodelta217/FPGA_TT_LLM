@@ -1,4 +1,4 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracci�n en FPGA
+# TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
 
 ## Indra Package
 - [onepager.md](onepager.md)

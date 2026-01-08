@@ -105,3 +105,16 @@ transcript
 *.bak
 *.swp
 *.swo
+
+# LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.synctex.gz
+*.toc
+*.out
+*.fdb_latexmk
+*.fls
+references.bib

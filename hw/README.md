@@ -1,38 +1,38 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracciÛn en FPGA
+# TFM Co-dise√±o IA+FPGA: Tensor-Train (TT) y kernel de contracci√≥n TT en FPGA
 
-## VisiÛn general
-El bloque HW es un TT Contraction Engine orientado a acelerar capas lineales comprimidas en Tensor-Train (TT). El objetivo es ejecutar contracciones TT en streaming con control por AXI4-Lite y transferencia de datos por AXI-Stream/DMA.
+## Visi√≥n general
+El bloque HW es un kernel de contracci√≥n TT orientado a acelerar capas lineales comprimidas en Tensor-Train (TT). El objetivo es ejecutar el kernel de contracci√≥n TT en streaming con control por AXI4-Lite y transferencia de datos por AXI-Stream/DMA.
 
 ## Interfaces previstas
-- AXI4-Lite: control, configuraciÛn y lectura de contadores.
+- AXI4-Lite: control, configuraci√≥n y lectura de contadores.
 - AXI-Stream: entrada/salida de activaciones y resultados.
 - DMA/DDR: acceso a cores TT y buffers de entrada/salida.
 
 ## Data layout (alto nivel)
 - Cores TT almacenados como tensores 4D con forma (r_in, n_out, n_in, r_out).
-- Orden linealizado por core, modo y rank para acceso secuencial en streaming.
+- Orden linealizado por core para acceso secuencial en streaming.
 - Metadatos (dims, ranks) en registros o descriptor de DMA.
 
-## Supuestos explÌcitos
+## Supuestos expl√≠citos
 - Ancho de palabra: 16 bits fijo (Q1.14) para datos y pesos.
 - Formato de stream: AXI-Stream con tdata empaquetado en 32 bits (2 muestras de 16 bits).
-- PolÌtica de saturaciÛn: saturaciÛn aritmÈtica en acumuladores de 32 bits.
+- Pol√≠tica de saturaci√≥n: saturaci√≥n aritm√©tica en acumuladores de 32 bits.
 
-## LÌmites actuales
-- No se soporta precisiÛn mixta ni formatos FP16/FP32.
-- No hay soporte para ranks din·micos por batch.
-- No hay bitstream ni implementaciÛn HLS/RTL funcional, solo skeleton.
+## L√≠mites actuales
+- No se soporta precisi√≥n mixta ni formatos FP16/FP32.
+- No hay soporte para ranks din√°micos por batch.
+- No hay bitstream ni implementaci√≥n HLS/RTL funcional, solo skeleton.
 
-## Plan de verificaciÛn
-- Golden model en Python con referencia TT (ml/tt.py).
-- Testbench RTL con estÌmulos sintÈticos y comparaciÛn contra golden.
-- MÈtricas de V&V: exactitud relativa, latencia por transacciÛn, conteo de stalls.
+## Plan de verificaci√≥n
+- Golden model en Python con referencia TT (`ml/tt.py`).
+- Testbench RTL con est√≠mulos sint√©ticos y comparaci√≥n contra golden.
+- M√©tricas de V&V: exactitud relativa, latencia por transacci√≥n, conteo de stalls.
 
-## QuÈ est· implementado hoy
+## Qu√© est√° implementado hoy
 - Estructura HW, mapas de registros y skeleton HLS/RTL.
-- Scripts SW de demo/bench para validar contracciÛn TT en CPU.
+- Scripts SW de demo/bench para validar contracci√≥n TT en CPU.
 
 ## Roadmap
 - Implementar kernel HLS con pipeline y streaming completo.
 - Integrar DMA/DDR y layout definitivo de cores TT.
-- AÒadir mediciones de latencia/recursos en FPGA y cerrar KPIs.
+- A√±adir mediciones de latencia/recursos en FPGA y cerrar KPIs.

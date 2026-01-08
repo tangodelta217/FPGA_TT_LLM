@@ -1,16 +1,16 @@
 ---
 marp: true
-title: TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
+title: TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
 ---
 
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
-## Co-diseno IA+FPGA para capas lineales
+# TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
+## Co-diseño IA+FPGA para capas lineales
 
 ---
 
 ## Problema
-- Capas lineales bandwidth-bound y coste dominante en inferencia.
-- Necesidad de SWaP / determinismo / soberanía en borde.
+- Capas lineales bandwidth-bound; el coste de memoria domina la inferencia.
+- DDR/DMA introduce latencia variable y penaliza SWaP / determinismo / soberanía.
 
 ---
 
@@ -55,7 +55,7 @@ Tabla KPI: [kpi_table.md](../assets/kpi_table.md)
 
 ---
 
-## Ask to Indra
-- Validación de plataforma FPGA y restricciones de interfaz.
-- Definición de perfiles de carga y límites de SWaP / determinismo / soberanía.
-- Mentorización técnica y revisión de V&V.
+## Solicitud a Indra
+- Confirmar plataforma FPGA y restricciones de interfaz.
+- Definir perfiles de carga y KPIs HW prioritarios.
+- Revisión de V&V y criterios de aceptación.

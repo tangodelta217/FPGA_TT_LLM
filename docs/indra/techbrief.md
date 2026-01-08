@@ -1,23 +1,23 @@
-# TFM Co-diseno IA+FPGA: Tensor-Train (TT) y kernel de contracción en FPGA
+# TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
 
 ## Alcance
-Este tech brief define el kernel de contracción TT para capas lineales y la arquitectura HW/SW asociada. El objetivo es mejorar SWaP / determinismo / soberanía en escenarios bandwidth-bound.
+Este tech brief define el kernel de contracción TT para capas lineales y la arquitectura HW/SW asociada. El foco es reducir tráfico a DDR y mejorar SWaP / determinismo / soberanía en escenarios bandwidth-bound.
 
 ## Definición del kernel TT (capas lineales)
-- Operación: y = W x, donde W se representa en Tensor-Train (TT).
+- Operación: y = W x, con W en Tensor-Train (TT).
 - Cores TT con forma (r_in, n_out, n_in, r_out) y contracción secuencial por modo.
-- Alcance: capas lineales con dims factorizadas (p.ej. 4x4x4x4).
+- Alcance: dims factorizadas y ranks fijos; sin batch dinámico.
 
 ## Layout de datos y export
-- Cores TT linealizados por core y rank para acceso secuencial.
-- Metadatos de dims y ranks empaquetados en registros o descriptor.
-- Export desde SW usando `ml/tt.py` y scripts de demo.
+- Cores TT linealizados por core para lectura secuencial.
+- Dims y ranks empaquetados en registros (ver `docs/assets/register_map.md`).
+- Export desde SW con `ml/tt.py` y scripts de demo/benchmarks.
 
 ## Arquitectura HLD
 - DMA desde DDR hacia buffers de entrada y cores TT.
 - Double buffering para solapar transferencia y cómputo.
-- MAC Array y acumulador con control de saturación.
-- Output buffer con backpressure por AXI-Stream.
+- MAC array y acumulador con política de saturación definida en HW.
+- Output buffer con backpressure por AXI-Stream y contadores de cycles/stalls.
 
 ## Interfaces
 - AXI4-Lite: control, arranque, estado y contadores.
@@ -34,7 +34,7 @@ Mapa de registros: [register_map.md](../assets/register_map.md).
 ## Plan de demo CPU + FPGA
 1. Validar compresión/error y tiempos en CPU (`make demo`, `make benchmarks`).
 2. Integrar kernel HLS con interfaz AXI y testbench RTL.
-3. Medir latencia y determinismo en FPGA y alimentar KPIs HW.
+3. Medir latencia, determinismo y recursos en FPGA y alimentar KPIs HW.
 
 ## KPIs
 | KPI | Definición | Estado |

@@ -1,0 +1,353 @@
+﻿\documentclass[10pt,a4paper]{article}
+
+% =========================================================
+% CONFIGURACIÓN (ÚNICO BLOQUE EDITABLE)
+% =========================================================
+% --- Tipo de documento / layout ---
+% true  => dos columnas (estilo “journal brief / one-pager / artículo”)
+% false => una columna (mejor para propuestas/memorias extendidas)
+\newif\ifDocTwoCol
+\DocTwoColtrue
+
+% Encabezado en páginas (recomendado en documentos extendidos):
+\newif\ifDocUseHeader
+\DocUseHeaderfalse
+
+% Incluir teléfono (por defecto NO en artículos/one-pager):
+\newif\ifIncludePhone
+\IncludePhonefalse
+
+% Año visible único en todo el documento (NO usar mes/día):
+\newcommand{\DocYear}{2026}
+
+% Título / subtítulo:
+\newcommand{\DocTitle}{\textsc{TFM Co-diseño IA+FPGA}: Tensor-Train (TT) y kernel de contracción TT en FPGA}
+\newcommand{\DocSubtitle}{ONE\_PAGER — Co-diseño IA+FPGA para capas lineales en Tensor-Train (TT)}
+\newcommand{\DocShortTitle}{TFM TT en FPGA}
+
+% Keywords (opcional):
+\newcommand{\DocKeywords}{Tensor-Train; TT-SVD; FPGA; AXI; capas lineales}
+
+% Idioma principal: seleccione UNO (spanish o english)
+\newcommand{\MainLang}{spanish}
+
+% --- Autor ---
+\newcommand{\AuthorName}{Mariano Millañanco Fernández}
+\newcommand{\AuthorLocation}{Ciudad Real, España}
+\newcommand{\AuthorAffilA}{Universidad de Sevilla — Máster en Microelectrónica}
+\newcommand{\AuthorAffilB}{UTAMED — Máster en Inteligencia Artificial}
+\newcommand{\AuthorRepoUrl}{https://github.com/tangodelta217/TFM\_FPGA\_TT\_LLM\_INDRA}
+\newcommand{\AuthorRepoText}{github.com/tangodelta217/TFM\_FPGA\_TT\_LLM\_INDRA}
+\newcommand{\AuthorEmail}{mariano.millananco@gmail.com}
+\newcommand{\AuthorPhone}{+34 638 97 15 46}
+% Compatibilidad MiKTeX: evitar conflicto de \Bbbk con amssymb.
+\AddToHook{package/amssymb/before}{\let\Bbbk\relax}
+% =========================================================
+% FIN CONFIGURACIÓN
+% =========================================================
+
+% --- Codificación e idiomas ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,english,es-tabla]{babel}
+
+% --- Márgenes (compactos pero seguros) ---
+\usepackage[top=2.0cm,bottom=2.0cm,left=2.0cm,right=2.0cm]{geometry}
+
+% --- Tipografía: cuerpo serif tipo Times + sans tipo Helvetica para títulos ---
+\usepackage{newtxtext,newtxmath}
+\usepackage[scaled=0.92]{helvet}
+
+% --- Calidad tipográfica ---
+\usepackage{microtype}
+
+% --- Gráficos y tablas ---
+\usepackage{graphicx}
+\graphicspath{{figures/}{figuras/}}
+\usepackage{booktabs}
+\usepackage{tabularx,array}
+
+% --- Matemáticas ---
+\usepackage{amsmath,amssymb,mathtools}
+
+% --- Listas compactas ---
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*,noitemsep,topsep=0.25em}
+\setlist[enumerate]{leftmargin=*,noitemsep,topsep=0.25em}
+
+% --- Captions y floats ---
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{flafter}
+\usepackage{placeins}
+\usepackage{adjustbox}
+
+% --- TikZ (si se usa, con estilos “safe” para evitar solapes) ---
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+\tikzset{
+  safebox/.style={
+    draw,
+    rounded corners=2pt,
+    align=center,
+    font=\small,
+    text width=0.26\linewidth,
+    minimum height=10mm,
+    inner sep=3pt
+  },
+  safearrow/.style={-Latex, line width=0.6pt},
+  safedash/.style={dashed, line width=0.6pt}
+}
+
+% --- Color de acento (similar al ejemplo “excelso”) ---
+\usepackage{xcolor}
+\definecolor{Accent}{RGB}{0,70,130}
+\definecolor{BoxBack}{RGB}{248,250,253}
+
+% --- Estilo de secciones (visual premium) ---
+\usepackage{titlesec}
+\titleformat{\section}
+  {\large\sffamily\bfseries\color{Accent}}
+  {\thesection.}{0.6em}{}
+\titleformat{\subsection}
+  {\normalsize\sffamily\bfseries\color{Accent}}
+  {\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.0ex plus 0.2ex minus 0.2ex}{0.6ex plus 0.2ex minus 0.2ex}
+\titlespacing*{\subsection}{0pt}{0.9ex plus 0.2ex minus 0.2ex}{0.4ex plus 0.2ex minus 0.2ex}
+
+% --- Caja ejecutiva tipo “Resumen ejecutivo” ---
+\usepackage[most]{tcolorbox}
+\newtcolorbox{ExecBox}[1]{%
+  colback=BoxBack,
+  colframe=Accent!35!black,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=6pt,right=6pt,top=5pt,bottom=5pt,
+  fonttitle=\sffamily\bfseries,
+  title=#1
+}
+
+% --- Espaciado de párrafos (evita “bloques amontonados”) ---
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+\raggedbottom
+
+% --- Separación de columnas (si se activa dos columnas) ---
+\setlength{\columnsep}{0.6cm}
+
+% --- Espaciado de floats/captions (compacto y estable) ---
+\setlength{\textfloatsep}{0.9em plus 0.2em minus 0.2em}
+\setlength{\intextsep}{0.9em plus 0.2em minus 0.2em}
+\captionsetup{font=small,labelfont=bf}
+
+% --- Anti overfull (sin recurrir a \sloppy) ---
+\setlength{\emergencystretch}{2em}
+
+% --- Header/footer (limpio) ---
+\usepackage{fancyhdr}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\ifDocUseHeader
+  \fancyhead[L]{\small\sffamily\color{Accent}\DocShortTitle}
+  \fancyhead[R]{\small\sffamily\color{Accent}\AuthorName}
+  \renewcommand{\headrulewidth}{0.3pt}
+  \renewcommand{\headrule}{\hbox to\headwidth{\color{Accent}\leaders\hrule height \headrulewidth\hfill}}
+\else
+  \renewcommand{\headrulewidth}{0pt}
+\fi
+\fancyfoot[C]{\sffamily\thepage}
+
+% --- URLs/links robustos (evita desbordes por URLs largas) ---
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=Accent,
+  citecolor=Accent,
+  urlcolor=Accent,
+  pdftitle={\DocTitle},
+  pdfauthor={\AuthorName}
+}
+% Si el título usa \textsc, evitar problemas en metadatos PDF:
+\pdfstringdefDisableCommands{%
+  \def\textsc#1{#1}%
+}
+
+% --- Forzar “fecha visible” a solo año ---
+\renewcommand{\today}{\DocYear}
+
+% =========================================================
+% BIBLIOGRAFÍA (EDITABLE: entradas reales, con DOI/URL)
+% =========================================================
+\usepackage{csquotes}
+\usepackage{filecontents}
+\begin{filecontents*}{references.bib}
+@article{oseledets2011tt,
+  author = {Oseledets, Ivan V.},
+  title = {Tensor-Train Decomposition},
+  journal = {SIAM Journal on Scientific Computing},
+  volume = {33},
+  number = {5},
+  pages = {2295--2317},
+  year = {2011},
+  doi = {10.1137/090752286},
+  url = {https://doi.org/10.1137/090752286}
+}
+
+@article{oseledets2009breaking,
+  author = {Oseledets, Ivan V. and Tyrtyshnikov, Eugene E.},
+  title = {Breaking the Curse of Dimensionality, or How to Use {SVD} in Many Dimensions},
+  journal = {SIAM Journal on Scientific Computing},
+  volume = {31},
+  number = {5},
+  pages = {3744--3759},
+  year = {2009},
+  doi = {10.1137/090748330},
+  url = {https://doi.org/10.1137/090748330}
+}
+
+@article{kolda2009tensor,
+  author = {Kolda, Tamara G. and Bader, Brett W.},
+  title = {Tensor Decompositions and Applications},
+  journal = {SIAM Review},
+  volume = {51},
+  number = {3},
+  pages = {455--500},
+  year = {2009},
+  doi = {10.1137/07070111X},
+  url = {https://doi.org/10.1137/07070111X}
+}
+
+@article{novikov2015tensorizing,
+  author = {Novikov, Alexander and Podoprikhin, Dmitrii and Osokin, Anton and Vetrov, Dmitry},
+  title = {Tensorizing Neural Networks},
+  journal = {arXiv preprint},
+  year = {2015},
+  url = {https://arxiv.org/abs/1509.06569}
+}
+
+@article{garipov2016ultimate,
+  author = {Garipov, Timur and Podoprikhin, Dmitrii and Novikov, Alexander and Vetrov, Dmitry},
+  title = {Ultimate Tensorization: Compressing Convolutional and FC Layers Alike},
+  journal = {arXiv preprint},
+  year = {2016},
+  url = {https://arxiv.org/abs/1611.03214}
+}
+\end{filecontents*}
+\usepackage[backend=biber,style=ieee,sorting=none]{biblatex}
+\addbibresource{references.bib}
+\AtEveryBibitem{\clearfield{year}\clearfield{date}}
+\AtBeginBibliography{\scriptsize}
+\setlength{\bibitemsep}{0pt}
+
+% =========================================================
+% MACROS DE MAQUETACIÓN (NO EDITAR)
+% =========================================================
+\newcommand{\MakeTitleBlock}{%
+  \begin{center}
+    {\LARGE\bfseries \DocTitle\par}
+    \vspace{0.25em}
+    {\large \DocSubtitle\par}
+    \vspace{0.85em}
+    {\large\bfseries \AuthorName\par}
+    {\normalsize \AuthorLocation\par}
+    {\normalsize \AuthorAffilA\par}
+    {\normalsize \AuthorAffilB\par}
+    \vspace{0.25em}
+    {\normalsize \href{\AuthorRepoUrl}{\AuthorRepoText}\par}
+    {\normalsize \href{mailto:\AuthorEmail}{\AuthorEmail}%
+      \ifIncludePhone\;|\;\AuthorPhone\fi\par}
+    \vspace{0.65em}
+    {\normalsize \DocYear\par}
+  \end{center}
+  \vspace{0.4em}
+  {\color{Accent}\rule{\linewidth}{0.6pt}}
+  \vspace{0.8em}
+}
+
+\newcommand{\FWHeading}[1]{%
+  {\sffamily\bfseries\color{Accent}#1}\par\vspace{0.25em}
+}
+
+\newcommand{\BeginDoc}[1]{%
+  \ifDocTwoCol
+    \twocolumn[#1]
+  \else
+    #1
+  \fi
+}
+
+% =========================================================
+% DOCUMENTO
+% =========================================================
+\begin{document}
+
+% Selección de idioma principal:
+\ifx\MainLang\undefined\selectlanguage{spanish}\else
+  \selectlanguage{\MainLang}
+\fi
+
+\BeginDoc{%
+  \MakeTitleBlock
+
+  % ===== Resumen / Abstract (top full-width) =====
+  % Regla: ONE_PAGER => cada uno 60–90 palabras. Extendido => 120–180 palabras.
+  \FWHeading{Resumen}
+Se desarrolla un TFM de co-dise?o IA+FPGA para acelerar capas lineales mediante compresi?n Tensor-Train (TT) y un kernel de contracci?n TT en FPGA. El estado actual incluye demo CPU reproducible con TT-SVD, m?tricas de compresi?n y error, y un skeleton HLS/RTL con interfaces AXI y mapa de registros. La evaluaci?n usa golden model en Python y define KPIs HW como objetivos (TBD).
+
+\FWHeading{Abstract}
+This TFM targets IA+FPGA co-design to accelerate linear layers through Tensor-Train (TT) compression and an FPGA TT contraction kernel. Current status includes a reproducible CPU demo with TT-SVD, compression and error metrics, and an HLS/RTL skeleton with AXI interfaces and a register map. Evaluation uses a Python golden model and defines hardware KPIs as targets (TBD) for the FPGA phase.
+
+% Keywords (opcional):
+{\small\sffamily\textbf{Keywords:} \DocKeywords\par}
+\vspace{0.6em}
+
+% ===== Caja ejecutiva (recomendada en one-pager y útil en extendidos) =====
+\begin{ExecBox}{Resumen ejecutivo (entregables medibles)}
+  \begin{itemize}
+    \item Demo CPU reproducible (TT-SVD y comparaci?n denso vs TT) con m?tricas en \texttt{docs/assets/kpi\_table.md} y \texttt{docs/assets/demo\_output.txt}.
+    \item Skeleton HW con AXI, mapa de registros y diagrama de bloques; V\&V con golden model y tests; KPIs HW como objetivos (TBD).
+  \end{itemize}
+\end{ExecBox}
+\vspace{0.6em}
+}
+
+% ============================
+% CUERPO (generar según TIPO)
+% ============================
+
+% Sugerencia de estructura:
+% - ONE_PAGER: 3–5 secciones cortas (puede ser IMRaD abreviado).
+% - ARTICULO_EXTENDIDO: IMRaD completo.
+% - PROPUESTA_TFM: motivación/objetivos/estado del arte/metodología/plan/riesgos/evaluación/resultados esperados.
+% - MEMORIA_TFM: incluir ToC al inicio (solo si DocTwoColfalse) y secciones extensas.
+
+\section{Introducción}
+Las capas lineales en inferencia en borde son bandwidth-bound y el tráfico a DDR domina la latencia, afectando SWaP / determinismo / soberanía. El TFM aborda la reducción de tráfico mediante compresión Tensor-Train (TT) y un kernel de contracción TT en FPGA con streaming y control AXI.
+
+\section{Metodología y arquitectura}
+La operación base es $y = W x$, donde $W$ se aproxima en Tensor-Train (TT) con cores $\mathcal{G}_k \in \mathbb{R}^{r_{k-1}\times n^{out}_k\times n^{in}_k\times r_k}$. La descomposición se obtiene con TT-SVD y se valida en CPU con la referencia NumPy.
+
+El kernel HW se diseña con AXI4-Lite, AXI-Stream/DMA y buffers locales. El layout de cores y el mapa de registros están en \url{docs/assets/register_map.md}.
+
+\section{Evidencia, plan y limitaciones}
+Evidencia actual (CPU): compresi?n 7.53x--341.33x y error relativo L2 8.85e-01 a \, $\sim$ \, 3e-15; tiempos en la tabla KPI (mediana de 40 repeticiones). Ver \url{docs/assets/kpi_table.md}, \url{docs/assets/bench_tradeoff.png} y \url{docs/assets/demo_output.txt}.
+
+Plan de evaluaci?n: comparaci?n TT vs denso, tests autom?ticos y co-simulaci?n HW/SW con contadores de cycles/stalls. Resultados esperados: reducci?n del tr?fico a DDR y mayor estabilidad temporal; KPIs HW de latencia, throughput, recursos y determinismo como objetivos (TBD). Limitaciones actuales: sin bitstream ni implementaci?n HLS/RTL funcional y m?tricas solo en host CPU.
+
+\FloatBarrier
+\nocite{*}
+\printbibliography[heading=none]
+
+% ============================
+% Checklist (comentario)
+% ============================
+% [OK] Sin primera persona plural
+% [OK] Fechas visibles solo 2026
+% [OK] Sin solapes; sin overfull severos
+% [OK] Figuras/tablas dentro de \linewidth/\columnwidth
+% [OK] Bibliograf?a real con DOI/URL (si hay \cite{})
+\end{document}
