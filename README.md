@@ -55,6 +55,7 @@ Activos generados con `make benchmarks`:
 
 ## Repo map
 - `ml/`: prototipos de compresion Tensor-Train (TT) y validacion.
+- `hw/README.md`: descripción de interfaces HW, layout de cores y plan de V&V.
 - `hw/`: skeleton HW con `hls/` y `rtl/`.
 - `sw/`: integracion SW y drivers (placeholder).
 - `scripts/`: demos, benchmarks y empaquetado Indra.
