@@ -1,4 +1,4 @@
-# TFM Co-diseño IA+FPGA: Tensor-Train (TT) y kernel de contracción TT en FPGA
+#Tensor-Train (TT) y kernel de contracción TT en FPGA
 
 ![CI](docs/assets/ci_badge.svg)
 
