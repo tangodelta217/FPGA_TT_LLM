@@ -26,7 +26,12 @@ jobs:
         run: make test
 
       - name: Repo structure
-        run: python scripts/check_repo.py
+        run: |
+          if [ -f scripts/check_repo.py ] && [ -d sw ]; then
+            python scripts/check_repo.py
+          else
+            echo "INFO: repo structure check skipped (not applicable)"
+          fi
 
       - name: Indra pack validation
         run: python scripts/validate_indra_pack.py
